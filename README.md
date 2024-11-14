@@ -10,7 +10,7 @@ To run the complete scan run:
  python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4.dat -o $OUTPUT_FOLDER_NAME
  
 To compute the measure of a certain point in the parameter space run: 
-python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4.dat $OUTPUT_FOLDER_NAME $NAME_OF_PARAMETER_FILE.txt -o $NAMEPLOT.pdf
+python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4.dat $OUTPUT_FOLDER_NAME BP_141124.txt -o $NAMEPLOT.pdf
 
 The benchmark point with which is possible to validate the scan is BP_141124.txt
 
