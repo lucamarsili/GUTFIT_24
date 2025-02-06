@@ -27,6 +27,9 @@ IO = False
 ##############################àààà##############################################à
 
 
+def classify_number(x):
+    return 1 if x < 0.5 else -1
+
 def matrix_diag3(d1,d2,d3):
     return np.array([[d1, 0.0, 0.0], [0.0, d2, 0.0], [0.0, 0.0, d3]], dtype = np.complex64)
 
@@ -116,8 +119,11 @@ Attributes:
         #self.attr5 = None
         """str: Docstring *after* attribute, with type specified."""
 
-        params = [
-            "sign_parameter",
+        params = ["sign_parameter1",
+           "sign_parameter2",
+           "sign_parameter3",
+           "sign_parameter4",
+           "sign_parameter5",
            "generic_quark_phase_a1",
            "generic_quark_phase_a2",
            "data_quark_th12",
@@ -138,9 +144,9 @@ Attributes:
            ]
         super().__init__(params)
         
-        #self.randomphase()
+        #self.randomphase(self.sign_parameter1, self.sign_parameter2, self.sign_parameter2, self.sign_parameter3, self.sign_parameter4, self.sign_parameter5)
         #self.randomsign(self.sign_parameter)
-
+    
     
     @property
     def val(self):
@@ -151,10 +157,14 @@ Attributes:
             value (TYPE): DESCRIPTION.
 
         '''
-        self.randomsign(self.sign_parameter)
+        self.randomphase(self.sign_parameter1,self.sign_parameter2, self.sign_parameter3, self.sign_parameter4, self.sign_parameter5)
         value = np.abs(
                 self.PRED(
-                    self.sign_parameter,
+                    self.sign_parameter1,
+		            self.sign_parameter2, 
+		            self.sign_parameter3,
+		            self.sign_parameter4, 
+		            self.sign_parameter5, 
                     self.generic_quark_phase_a1,
                     self.generic_quark_phase_a2,
                     self.data_quark_th12,
@@ -174,83 +184,22 @@ Attributes:
                     self.model4_ce
                     )
                 )
-
-
-        #self.randomsign(self.sign_parameter)
         return value
-        
+
    
-    def randomphase(self):  #reparametrize sign for quark yukawa couplings
+    def randomphase(self,s1,s2,s3,s4,s5):  #reparametrize sign for quark yukawa couplings
         
     
-        self.ydrand  = (2. * random.randint(0, 1) -1.)
-        self.ysrand  = (2. * random.randint(0, 1) -1.)
-        self.ybrand  = (2. * random.randint(0, 1) -1.)
-        self.yurand  = (2. * random.randint(0, 1) -1.)
-        self.ycrand  = (2. * random.randint(0, 1) -1.)
-        self.ytrand  = (2. * random.randint(0, 1) -1.)
-   
-    def repdown(self,CD = []):
-        self.ydrand = CD[0]
-        self.ysrand = CD[1]
-        self.ybrand = CD[2]
-
-
-    def repup(self,CU = []):
-        self.yurand = CU[0]
-        self.ycrand = CU[1]
-        self.ytrand = CU[2]
-
-    def minusup(self):
-        self.yurand = -self.yurand
-        self.ycrand = -self.ycrand
-        self.ybrand = -self.ybrand
-
-    def randomsign(self, s):
-        '''
+        self.ydrand  = classify_number(s1)
+        self.ysrand  = classify_number(s2)
+        self.ybrand  = classify_number(s3)
+        self.yurand  = classify_number(s4)
+        self.ycrand  = classify_number(s5)
+        self.ytrand  = 1
         
-
-        Args:
-            s (TYPE): DESCRIPTION.
-
-        Returns:
-            None.
-
-        '''
-        C1 = [+1,+1,+1]
-        C2 = [+1,+1,-1]
-        C3 = [+1,-1,+1]
-        C4 = [-1,+1,+1]
-        C1m = [-1,-1,-1]
-        C2m = [-1,-1,+1]
-        C3m = [-1,+1,-1]
-        C4m = [+1,-1,-1]
-       
-        C = [C1,C2,C3,C4]
-        Cm = [C1m,C2m, C3m, C4m]
-        for i in range(0,32):
-            if (s < (i+1)/32):
-                if(i<16):
-                    self.repdown(C[int(i/4)])#check if the code is right
-                    self.repup(C[i%4])
-                    if testsign:
-                        print(i)
-                        print(C[int(i/4)])
-                        print(C[i%4])
-                        
-                    break
-                else:
-                    i =  i-16
-                    self.repdown(C[int(i/4)])#check if the code is right
-                    self.repup(Cm[i%4])
-                    #self.minusup()
-                    if testsign:
-                        print(i)
-                        print(C[int(i/4)])
-                        print(C[i%4])
-                   
-                    break
-    def matrix_Yd(self,s, a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
+   
+    
+    def matrix_Yd(self,s1,s2,s3,s4,s5, a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
         Pa      = matrix_phase2(a1, a2)
         Vckm    = matrix_vckm(th12q, th13q, th23q, deltaq)
         ydrand  = self.ydrand*yd
@@ -273,8 +222,8 @@ Attributes:
 
 #Modify the function below for a different model, at the moment used for 2209.00021 model                                                                                                                  
 
-    def MnuTheory(self, s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
-        Yd        = self.matrix_Yd(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+    def MnuTheory(self,s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
+        Yd        = self.matrix_Yd(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         Yu        = matrix_diag3(self.yurand*yu, self.ycrand*yc,  self.ytrand*yt)
         ReYd      = np.real(Yd)
         ImYd      = np.imag(Yd)
@@ -294,8 +243,8 @@ Attributes:
             #print(self.sign_parameter)
         return  type1
 
-    def YlTheory(self,s,a1,a2,th12q,th13q,th23q,deltaq,yu,yc,yt,yd,ys,yb,mR, r1, r2, cnu,ce):
-        Yd = self.matrix_Yd(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+    def YlTheory(self,s1,s2,s3,s4,s5,a1,a2,th12q,th13q,th23q,deltaq,yu,yc,yt,yd,ys,yb,mR, r1, r2, cnu,ce):
+        Yd = self.matrix_Yd(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         Yu = matrix_diag3(self.yurand*yu,  self.ycrand*yc,  self.ytrand*yt)
         ReYd = np.real(Yd)
         ImYd = np.imag(Yd)
@@ -316,9 +265,9 @@ Attributes:
         return Ylepton
 
 
-    def MixingMatrix(self,  s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce): #diagonalize both Mnu and Yl, use the method linalg.eigh, ordered eigenvalues             
-        Mnu = self.MnuTheory(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
-        Ylepton = self.YlTheory(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)
+    def MixingMatrix(self,  s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce): #diagonalize both Mnu and Yl, use the method linalg.eigh, ordered eigenvalues             
+        Mnu = self.MnuTheory(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
+        Ylepton = self.YlTheory(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)
        # leptonmasses, Ul = np.linalg.eig(Ylepton)                                                                                                                                                         
         leptomasssquared, Vl = np.linalg.eigh(Ylepton @ np.transpose(np.conjugate(Ylepton)))
         if (testlepto==True):
@@ -331,24 +280,24 @@ Attributes:
 
 
 
-    def UPMNS(self, s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce):
-        lm, nm, Vl, Vnu = self.MixingMatrix(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+    def UPMNS(self, s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce):
+        lm, nm, Vl, Vnu = self.MixingMatrix(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         if (testUPMNS == True):
             print(UMPNS(PL()))
         return  np.transpose(np.conj(Vl)) @ Vnu
 
-    def angles(self, s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
-        U = self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)
-        sin13 = abs(self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][2])
-        tan12 = abs(self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][1]/self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][0])
-        tan23 = np.abs(self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[1][2]/self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[2][2])
+    def angles(self, s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
+        U = self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)
+        sin13 = abs(self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][2])
+        tan12 = abs(self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][1]/self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[0][0])
+        tan23 = np.abs(self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[1][2]/self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)[2][2])
         delta = np.angle(U[0][1]*U[1][2]*np.conj(U[0][2])*np.conj(U)[1][1]+(np.sin(np.arctan(tan12))**2)*(np.cos(np.arcsin(sin13))**2)*(np.sin(np.arctan(tan23))**2)*(sin13**2))
         aM1 = np.angle(U[0][1])
         aM2 = np.angle(U[1][2])
         return sin13, tan12, tan23, delta, aM1, aM2
 
-    def masses(self, s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
-        Mnu = self.MnuTheory(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
+    def masses(self, s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
+        Mnu = self.MnuTheory(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
         nm, Vnu = np.linalg.eigh(np.transpose(np.conjugate(Mnu))@Mnu)
 
         if IO:
@@ -358,8 +307,8 @@ Attributes:
 
 
 
-    def RHNMatrix(self,s, a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
-        Yd = self.matrix_Yd(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+    def RHNMatrix(self,s1,s2,s3,s4,s5, a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
+        Yd = self.matrix_Yd(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         Yu = matrix_diag3(self.yurand*yu,  self.ycrand*yc,  self.ytrand*yt)
         ReYd = np.real(Yd)
         ImYd = np.imag(Yd)
@@ -380,15 +329,15 @@ Attributes:
 
 
 
-    def PRED(self,s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce): #return observables needed for the scan
+    def PRED(self,s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce): #return observables needed for the scan
         
-        U = self.UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
-        lm,nm, Vl, Vnu = self.MixingMatrix(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
-        msq12, msq13 = self.masses(s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+        U = self.UPMNS(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
+        lm,nm, Vl, Vnu = self.MixingMatrix(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
+        msq12, msq13 = self.masses(s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         yyye = np.sqrt(lm[0])
         yyymu = np.sqrt(lm[1])
         yyytau = np.sqrt(lm[2])
-        s13, t12, t23,d, aM1,aM2 = self.angles(s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
+        s13, t12, t23,d, aM1,aM2 = self.angles(s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
         A = []
         A.append(np.arcsin(s13))
         A.append(np.arctan(t12))
@@ -401,114 +350,61 @@ Attributes:
         A = np.asarray(A)
         return A
      
+def readparameter(fname):  #reads the parameter card 
+    d = {}
+    with open(fname) as f:
+        for line in f:
+            l = line.strip()
+            if len(l) == 0 or l.startswith("#"):
+                continue
+                print(l)
 
-class Predictions(Type1And2SeeSaw_v4): #similar class return all the predictions of the model
-    def __init__(self):
-        params = ["sign_parameter",
-            "generic_quark_phase_a1",
-            "generic_quark_phase_a2",
-           "data_quark_th12",
-           "data_quark_th13",
-           "data_quark_th23",
-           "data_quark_delta",
-           "data_quark_yu",
-           "data_quark_yc",
-           "data_quark_yt",
-           "data_quark_yd",
-           "data_quark_ys",
-           "data_quark_yb",
-           "model4_mR",
-           "model4_r1",
-           "model4_r2",
-           "model4_cnu",
-           "model4_ce"
-           ]
-        super().__init__()        
-        #self.randomphase()
+            k,v  = l.split(" ")
+            d[k] = float(v)
+    return d
 
-    @property
-    def val(self):
-        super().randomsign(self.sign_parameter)
-        value = np.abs(
-                self.OBS(   
-                    self.sign_parameter,                  #change method here: call it Observables
-                    self.generic_quark_phase_a1,
-                    self.generic_quark_phase_a2,
-                    self.data_quark_th12,
-                    self.data_quark_th13,
-                    self.data_quark_th23,
-                    self.data_quark_delta,
-                    self.data_quark_yu,
-                    self.data_quark_yc,
-                    self.data_quark_yt,
-                    self.data_quark_yd,
-                    self.data_quark_ys,
-                    self.data_quark_yb,
-                    self.model4_mR,
-                    self.model4_r1,
-                    self.model4_r2,
-                    self.model4_cnu,
-                    self.model4_ce
-                    )
-                )
-
-
-        #self.randomphase()
-        return value
- 
+def sample(x,E,PL,N,pnames): #Creates a distribution with N points for theory and data 
+    D = []
+    T = []
+    trials=0
+    for _ in range(N):
+        p=PL()
+        for num, pn in enumerate(pnames):
+            p[pn] = x[num]
+            print(p[pn])
+            print(x[num])
+        print(p)
+        data = E(p)
+        print(data)
+        D.append(data)
         
-
-    def OBS(self,s, a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
-        O = []
-        U = super().UPMNS(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
-        lm,nm, Vl, Vnu = super().MixingMatrix(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR,r1, r2, cnu, ce)
-        msq12, msq13 = super().masses(s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
-        #leptonmasses, mixing = np.linalg.eigh(self.YlTheory(s, a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce))
-        yyye = lm[0]
-        yyymu = lm[1]
-        yyytau = lm[2]
-        m1 = np.sqrt(nm[0])*1000 #meV
-        s13, t12, t23,d, aM1,aM2 = super().angles(s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
-        MN = super().RHNMatrix(s,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce)
-        MNmassessq, VN = np.linalg.eigh(np.conjugate(np.transpose(MN)) @ MN)
-        #mbetabeta in meV
-        M_tilde = np.transpose(np.conjugate(Vl))@super().MnuTheory(s,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce) @ np.conjugate(Vl)
-        #mbetabeta = (np.abs(U[0][0])**2)*np.sqrt(nm[0])*1000+  (np.abs(U[0][1])**2)*np.sqrt(nm[1])*1000+  (np.abs(U[0][2])**2)*np.sqrt(nm[2])*1000 
-        mbetabeta = M_tilde[0][0]
-        O.append(np.arcsin(s13))
-        O.append(np.arctan(t12))
-        O.append(np.arctan(t23))
-        O.append(d)
-        O.append(aM1)
-        O.append(aM2)
-        O.append(m1)
-        O.append(mbetabeta)
-        O.append(msq12)
-        O.append(msq13)
-        O.append(np.sqrt(yyye))
-        O.append(np.sqrt(yyymu))
-        O.append(np.sqrt(yyytau))
-        O.append(np.sqrt(MNmassessq[0]))
-        O.append(np.sqrt(MNmassessq[1]))
-        O.append(np.sqrt(MNmassessq[2]))
-        O = np.array(O)
-        return O
-
- 
+    return D, True
 
 if __name__=="__main__":
+    import optparse, os, sys
+    op = optparse.OptionParser(usage=__doc__)
+    opts, args = op.parse_args()
+    PL = parameterlist.ParameterList.fromConfigFile(args[0])
+    N  = 1 # number of samples of PL
+    pdict        =   readparameter(args[1])
+    usethese = [] #it select free parameters, look at parameterlist.py for understand better what happens 
+
+    bounds, pnames = PL.getBox(usethese)
+
+    PMIN   = [b[0] for b in bounds]
+    PMAX   = [b[1] for b in bounds]
+    PLEN   = [PMAX[i] - PMIN[i] for i in range(len(pnames))]
     E =  Type1And2SeeSaw_v4()
+    print(sample([pdict[pn] for pn in pnames] ,E,PL,N, pnames))
+    E.ydrand = -1
+    E.ysrand = +1
+    E.ybrand = +1
+
+    E.yurand = +1
+    E.ycrand = -1
+    E.ytrand = -1
     
     
-    
-    E.randomsign(0.4741519632492320)
-    print(E.ydrand)
-    print(E.ysrand)
-    print(E.ybrand)
-    print(E.yurand)
-    print(E.ycrand)
-    print(E.ytrand)
-    #print(E.YlTheory(9.82e-01 , 6.17698445e-01 , 3.86165285e+00, 0.225, 0.00386, 0.0438, 1.144,3.04e-6 ,0.00149, 0.489, 6.05e-5, 1.2e-4,6.16e-3  ,4.42452370e-11 ,-1.96864574e-02, -4.19086450e+00, -1.48883260e+00 , 1.28914399e+01 ))
     '''
     PL =  parameterlist.ParameterList.fromConfigFile("../examples/param_card3sigma_newsmall.dat")
 #    E.sign_parameter = 0.078125

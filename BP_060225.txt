@@ -1,0 +1,16 @@
+# Best fit point (measure: 2.0146728001624026):
+sign_parameter1 0.7741519632492320
+sign_parameter2 0.4741519632492320
+sign_parameter3 0.4741519632492320
+sign_parameter4 0.7741519632492320
+sign_parameter5 0.4741519632492320
+generic_quark_phase_a1 0.6064507917223371
+generic_quark_phase_a2 3.8285107242691758
+model4_mR 0.0000000000506534
+model4_r1 0.0182368521360452
+model4_r2 -3.9584782554759497
+model4_cnu -0.8294436148924511
+model4_ce 14.048809726800223
+
+#Measure at best fit point is 2.0146728001624026
+#Same parameters new code 1.999..., Iguess just numerical oscillation
