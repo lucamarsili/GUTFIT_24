@@ -277,6 +277,7 @@ if __name__=="__main__":
                 json.dump(pnames, open('%s/params.json'%opts.OUTPUT, 'w'))
 
                 NP = len(pnames)
+                print(NP)
                 print("Now analyzing output from {}/GUTFIT.txt".format(opts.OUTPUT))
         
         

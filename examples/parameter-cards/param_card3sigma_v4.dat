@@ -9,7 +9,11 @@
 # given in radians and mass squared differences of neutrinos are in GeV^2.
 # all masses are in GeV. Here we can in log10(mass [GeV]), also log10(r1),log10(r2),  log10(ce) and log10(cnu)
 
-sign_parameter         0      1
+sign_parameter1         0      1
+sign_parameter2         0      1
+sign_parameter3         0      1
+sign_parameter4         0      1
+sign_parameter5         0      1
 generic_quark_phase_a1 0 6.28
 generic_quark_phase_a2 0 6.28
 data_quark_th12        0.224998 
