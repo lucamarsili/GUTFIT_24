@@ -8,7 +8,18 @@ This version does the scan linearly in all the free parameters, there are other 
 Enter in the main folder /GUTFIT_24/
 To run the complete scan run: 
  python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4.dat -o $OUTPUT_FOLDER_NAME
- 
+
+ For inverted ordering: 
+ python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4_IO.dat -o $OUTPUT_FOLDER_NAME
+
+Moreover, the file muktinest should be changed depending on which file one wants to run.
+from gutfit.experimentalneutrinomassmatrix import ExperimentalNeutrinoMassMatrix
+from gutfit.type1and2seesaw_IO import Type1And2SeeSaw_v4
+from gutfit import parameterlist
+
+In the line  from gutfit.type1and2seesaw_IO import Type1And2SeeSaw_v4, this will give the file for inverted ordering and the one with type1and2seesaw__0302 will give NO. 
+Always reinstall the program before running. 
+
 To compute the measure of a certain point in the parameter space run: 
 python3 examples/multinest_v4.py examples/parameter-cards/param_card3sigma_v4.dat BP_141124.txt -o fig.pdf 
 
