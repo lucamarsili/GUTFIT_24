@@ -299,6 +299,8 @@ Attributes:
     def masses(self, s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
         Mnu = self.MnuTheory(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
         nm, Vnu = np.linalg.eigh(np.transpose(np.conjugate(Mnu))@Mnu)
+	electron_ordering = np.argsort(np.abs(Vnu[:,0]))
+	nm = nm[electron_ordering]
 
         if IO:
             print("MassesIO")
