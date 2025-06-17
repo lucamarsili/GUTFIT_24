@@ -90,7 +90,7 @@ Attributes:
     
 
     
-    def __init__(self):
+    def __init__(self,IO= False):
         """Example of docstring on the __init__ method.
 
         The __init__ method may be documented in either the class level
@@ -143,7 +143,7 @@ Attributes:
            "model4_ce"
            ]
         super().__init__(params)
-        
+        self.IO = IO
         #self.randomphase(self.sign_parameter1, self.sign_parameter2, self.sign_parameter2, self.sign_parameter3, self.sign_parameter4, self.sign_parameter5)
         #self.randomsign(self.sign_parameter)
     
@@ -299,14 +299,12 @@ Attributes:
     def masses(self, s1,s2,s3,s4,s5,a1 , a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb,mR, r1, r2, cnu, ce):
         Mnu = self.MnuTheory(s1,s2,s3,s4,s5,a1, a2,  th12q, th13q, th23q, deltaq, yu, yc, yt, yd, ys, yb, mR, r1, r2, cnu, ce)*(10**9)
         nm, Vnu = np.linalg.eigh(np.transpose(np.conjugate(Mnu))@Mnu)
-	electron_ordering = np.argsort(np.abs(Vnu[:,0]))
-	nm = nm[electron_ordering]
-
-        if IO:
+        electron_ordering = np.argsort(np.abs(Vnu[:,0]))
+        nm = nm[electron_ordering]
+        if self.IO:
             print("MassesIO")
             print(nm[0]+ nm[1]+nm[2])
             return np.abs(nm[0]-nm[1]), -np.abs(nm[1]-nm[2])
-            
         else:
             print(nm[0]+ nm[1]+nm[2])
             return np.abs(nm[0]-nm[1]), np.abs(nm[0]-nm[2])
